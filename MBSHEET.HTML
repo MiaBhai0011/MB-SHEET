@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MB Sheet Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+    table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>MB Sheet Generator</h2>
+
+  <input type="text" id="item" placeholder="Enter item name" required>
+  <input type="number" id="quantity" placeholder="Quantity" required>
+  <input type="text" id="unit" placeholder="Unit (e.g., kg, m)" required>
+  <button onclick="addItem()">Add to MB Sheet</button>
+  <button onclick="exportToExcel()">Download as Excel</button>
+
+  <table id="mbTable">
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Item Name</th>
+        <th>Quantity</th>
+        <th>Unit</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <script>
+    let serial = 1;
+
+    function addItem() {
+      const item = document.getElementById("item").value;
+      const quantity = document.getElementById("quantity").value;
+      const unit = document.getElementById("unit").value;
+
+      if (!item || !quantity || !unit) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      const table = document.getElementById("mbTable").getElementsByTagName("tbody")[0];
+      const newRow = table.insertRow();
+
+      newRow.innerHTML = `
+        <td>${serial++}</td>
+        <td>${item}</td>
+        <td>${quantity}</td>
+        <td>${unit}</td>
+      `;
+
+      document.getElementById("item").value = '';
+      document.getElementById("quantity").value = '';
+      document.getElementById("unit").value = '';
+    }
+
+    function exportToExcel() {
+      const table = document.getElementById("mbTable");
+      const workbook = XLSX.utils.table_to_book(table, { sheet: "MB Sheet" });
+      XLSX.writeFile(workbook, "mb_sheet.xlsx");
+    }
+  </script>
+
+</body>
+</html>
